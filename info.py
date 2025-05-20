@@ -97,7 +97,7 @@ GRP_LNK = environ.get('GRP_LNK', 'https://t.me/Moviesrequst01')
 CHNL_LNK = environ.get('CHNL_LNK', 'https://t.me/Backup625')
 OWNER_LNK = environ.get('OWNER_LNK', 'https://t.me/Deep2213k')
 DREAMCINEZONE_MOVIE_UPDATE_CHANNEL_LNK = environ.get('DREAMCINEZONE_MOVIE_UPDATE_CHANNEL_LNK', 'https://t.me/+mpCV4oq2xQE5ZmNl')
-OWNERID = int(os.environ.get('OWNERID', '1234567890'))  # Replace with the actual admin ID
+OWNERID = int(os.environ.get('OWNERID', '6467566398'))  # Replace with the actual admin ID
 
 # ============================
 # User Configuration
@@ -114,7 +114,7 @@ MAX_B_TN = environ.get("MAX_B_TN", "5")
 MAX_BTN = is_enabled((environ.get('MAX_BTN', "True")), True)
 PORT = environ.get("PORT", "8080")
 MSG_ALRT = environ.get('MSG_ALRT', 'Share & Support Us ♥️')
-SUPPORT_CHAT = environ.get('SUPPORT_CHAT', 'https://t.me/')  # Support group link (make sure bot is admin)
+SUPPORT_CHAT = environ.get('SUPPORT_CHAT', 'https://t.me/Ownersupport')  # Support group link (make sure bot is admin)
 P_TTI_SHOW_OFF = is_enabled((environ.get('P_TTI_SHOW_OFF', "False")), False)
 IMDB = is_enabled((environ.get('IMDB', "False")), False)
 AUTO_FFILTER = is_enabled((environ.get('AUTO_FFILTER', "True")), True)
