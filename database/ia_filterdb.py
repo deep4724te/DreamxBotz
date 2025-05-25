@@ -269,7 +269,7 @@ async def send_msg(bot, filename, caption):
             filename = filename[: filename.find(season) + 1]
 
         qualities = ["ORG", "ORG", "HDCAM", "HDCAM", "HQ", "HQ", "HDRip", "HDRIP", "CAMRIP", "CAMRip", "HDTC", "PREDVD", "DVDscr", "dvdscr", "dvdrip", "dvdscr", "HDTC", "dvdscreen", "HDTS", "HDTC"]
-        quality = await get_qualities(caption.lower(), #qualities) or "HDRip"
+        quality = await get_qualities(caption.lower(), qualities) or "HDRip"
 
         language = ""
         possible_languages = CAPTION_LANGUAGES
