@@ -275,7 +275,7 @@ async def send_msg(bot, filename, caption):
         possible_languages = CAPTION_LANGUAGES
         for lang in possible_languages:
             if lang.lower() in caption.lower():
-                language += f"{lang}, "
+                language += f"#{lang}, "
         language = language[:-2] if language else "Not idea 😄"
 
         filename = re.sub(r"[\(\)\[\]\{\}:;'\-!]", "", filename)
