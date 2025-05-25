@@ -268,7 +268,7 @@ async def send_msg(bot, filename, caption):
         elif season and season in filename:
             filename = filename[: filename.find(season) + 1]
 
-        qualities = ["ORG", "ORG", "HDCAM", "HDCAM", "HQ", "HQ", "HDRip", "HDRIP", "CAMRIP", "CAMRip", "HDTC", "PREDVD", "DVDscr", "dvdscr", "dvdrip", "dvdscr", "HDTC", "dvdscreen", "HDTS", "HDTC"]
+        qualities = ["ORG", "org", "hdcam", "HDCAM", "HQ", "hq", "HDRip", "hdrip", "camrip", "CAMRip", "hdtc", "predvd", "DVDscr", "dvdscr", "dvdrip", "dvdscr", "HDTC", "dvdscreen", "HDTS", "hdts"]
         quality = await get_qualities(caption.lower(), qualities) or "HDRip"
 
         language = ""
@@ -288,7 +288,7 @@ async def send_msg(bot, filename, caption):
             resized_poster = None
 
             if imdb:
-                poster_url = imdb.get('https://image.tmdb.org/t/p/original/')
+                poster_url = imdb.get('poster_url')
                 if poster_url:
                     resized_poster = await fetch_image(poster_url)  
 
