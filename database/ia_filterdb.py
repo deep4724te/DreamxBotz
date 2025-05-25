@@ -268,8 +268,8 @@ async def send_msg(bot, filename, caption):
         elif season and season in filename:
             filename = filename[: filename.find(season) + 1]
 
-        qualities = ["ORG", "org", "hdcam", "HDCAM", "HQ", "hq", "HDRip", "hdrip", "camrip", "CAMRip", "hdtc", "predvd", "DVDscr", "dvdscr", "dvdrip", "dvdscr", "HDTC", "dvdscreen", "HDTS", "hdts"]
-        quality = await get_qualities(caption.lower(), #qualities) or "HDRip"
+        qualities = ["ᴏʀɢ", "ʜᴅᴄᴀᴍ", "ʜǫ", "ʜᴅʀɪᴘ",  "ᴄᴀᴍʀɪᴘ", "ʜᴅᴛᴄ", "ᴘʀᴇᴅᴠᴅ", "ᴅᴠᴅsᴄʀ", "ᴅᴠᴅʀɪᴘ", "ᴅᴠᴅsᴄʀ", "ʜᴅᴛᴄ", "ᴅᴠᴅsᴄʀᴇᴇɴ", "ʜᴅᴛs"]
+        quality = await get_qualities(caption.lower(), #qualities) or "ʜᴅʀɪᴘ"
 
         language = ""
         possible_languages = CAPTION_LANGUAGES
