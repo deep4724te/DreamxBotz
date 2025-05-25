@@ -42,7 +42,7 @@ ADMINS = [int(admin) if id_pattern.search(admin) else admin for admin in environ
 CHANNELS = [int(ch) if id_pattern.search(ch) else ch for ch in environ.get('CHANNELS', '-1002151783803').split()]  # Channel id for auto indexing (make sure bot is admin)
 LOG_CHANNEL = int(environ.get('LOG_CHANNEL', '-1002427494480'))  # Log channel id (make sure bot is admin)
 BIN_CHANNEL = int(environ.get('BIN_CHANNEL', '-1002160542554'))  # Bin channel id (make sure bot is admin)
-DREAMCINEZONE_MOVIE_UPDATE_CHANNEL = int(environ.get('DREAMCINEZONE_MOVIE_UPDATE_CHANNEL', '-1002537474111'))  # Notification of those who verify will be sent to your channel
+DREAMCINEZONE_MOVIE_UPDATE_CHANNEL = int(environ.get('DREAMCINEZONE_MOVIE_UPDATE_CHANNEL', '-1002001862509'))  # Notification of those who verify will be sent to your channel
 PREMIUM_LOGS = int(environ.get('PREMIUM_LOGS', '-1001970548842'))  # Premium logs channel id
 auth_channel = environ.get('AUTH_CHANNEL', '-1002151783803')  # Channel/Group ID for force sub (make sure bot is admin)
 DELETE_CHANNELS = [int(dch) if id_pattern.search(dch) else dch for dch in environ.get('DELETE_CHANNELS', '-1002479259622').split()]
@@ -69,7 +69,7 @@ COLLECTION_NAME = environ.get('COLLECTION_NAME', 'dreamcinezone_files')
 # ============================
 # Movie Notification & Update Settings
 # ============================
-DREAMCINEZONE_MOVIE_UPDATE_NOTIFICATION = bool(environ.get('DREAMCINEZONE_MOVIE_UPDATE_NOTIFICATION', False))  # Notification On (True) / Off (False)
+DREAMCINEZONE_MOVIE_UPDATE_NOTIFICATION = bool(environ.get('DREAMCINEZONE_MOVIE_UPDATE_NOTIFICATION', True))  # Notification On (True) / Off (False)
 DREAMCINEZONE_IMAGE_FETCH = bool(environ.get('DREAMCINEZONE_IMAGE_FETCH', True))  # On (True) / Off (False)
 CAPTION_LANGUAGES = ["Bhojpuri", "Hindi", "Bengali", "Tamil", "English", "Bangla", "Telugu", "Malayalam", "Kannada", "Marathi", "Punjabi", "Bengoli", "Gujrati", "Korean", "Gujarati", "Spanish", "French", "German", "Chinese", "Arabic", "Portuguese", "Russian", "Japanese", "Odia", "Assamese", "Urdu"]
 
@@ -96,7 +96,7 @@ IS_TUTORIAL = bool(environ.get('IS_TUTORIAL', False))
 GRP_LNK = environ.get('GRP_LNK', 'https://t.me/Moviesrequst01')
 CHNL_LNK = environ.get('CHNL_LNK', 'https://t.me/Backup625')
 OWNER_LNK = environ.get('OWNER_LNK', 'https://t.me/Deep2213k')
-DREAMCINEZONE_MOVIE_UPDATE_CHANNEL_LNK = environ.get('DREAMCINEZONE_MOVIE_UPDATE_CHANNEL_LNK', 'https://t.me/+mpCV4oq2xQE5ZmNl')
+DREAMCINEZONE_MOVIE_UPDATE_CHANNEL_LNK = environ.get('DREAMCINEZONE_MOVIE_UPDATE_CHANNEL_LNK', 'https://t.me/Backup2213k')
 OWNERID = int(os.environ.get('OWNERID', '6467566398'))  # Replace with the actual admin ID
 
 # ============================
