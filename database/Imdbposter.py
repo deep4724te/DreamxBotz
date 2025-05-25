@@ -122,7 +122,7 @@ async def get_movie_details(query, id=False, file=None):
             'poster_url': poster_url,
             'plot': plot,
             'rating': str(movie.get("rating")),
-            'url': f'https://www.imdb.com/title/tt{movieid}'
+            'url': f'https://catbox.moe/title/tt{movieid}'
         }
 
     except Exception as e:
