@@ -284,11 +284,11 @@ async def send_msg(bot, filename, caption):
         text = text.format(filename, quality, language)
 
         if await add_name(OWNERID, filename):
-            envs.sh = await get_movie_details(filename)  
+            imdb = await get_movie_details(filename)  
             resized_poster = None
 
-            if envs.sh:
-                poster_url = envs.sh.get('poster_url')
+            if imdb:
+                poster_url = imdb.get('poster_url')
                 if poster_url:
                     resized_poster = await fetch_image(poster_url)  
 
