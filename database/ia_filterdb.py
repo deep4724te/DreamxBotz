@@ -280,7 +280,7 @@ async def send_msg(bot, filename, caption):
 
         filename = re.sub(r"[\(\)\[\]\{\}:;'\-!]", "", filename)
 
-        text = "\n\n🎬 𝖳𝗂𝗍𝗅𝖾: `{}`\n\n💿 𝖰𝗎𝖺𝗅𝗂𝗍𝗒: {}\n\n🔊 𝖠𝗎𝖽𝗂𝗈  : {}"
+        caption_message = f"#ɴᴇᴡ_ᴍᴇᴅɪᴀ ✅\n\n🫥  {movie_name} {year or ''} ⿻   | ⭐ ɪᴍᴅʙ ɪɴғᴏ\n\n🎭 ɢᴇɴʀᴇs : {language}\n\n📽 ғᴏʀᴍᴀᴛ: {quality}\n🔊 ᴀᴜᴅɪᴏ: {language if language != 'Not Idea' else 'Hindi'}\n\n#TV_SERIES" 
         text = text.format(filename, quality, language)
 
         if await add_name(OWNERID, filename):
