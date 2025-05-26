@@ -224,77 +224,108 @@ def encode_file_id(s: bytes) -> str:
         if i == 0:
             n += 1
         else:
-            if n:
-                r += b"\x00" + bytes([n])
-                n = 0
+from pyrogram import Client, filters
+from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
+from info import CHANNELS, MOVIE_UPDATE_CHANNEL, ADMINS, LOG_CHANNEL
+from database.ia_filterdb import save_file, unpack_new_file_id
+from utils import temp
+import re
+from database.users_chats_db import db
+from tmdbv3api import TMDb, Movie
 
-            r += bytes([i])
+processed_movies = set()
+media_filter = filters.document | filters.video
 
-    return base64.urlsafe_b64encode(r).decode().rstrip("=")
+# TMDb Setup
+tmdb = TMDb()
+tmdb.api_key = '9db7743f613d4a909e42e9d3f5937c1d'  # Replace with your actual TMDb API key
+tmdb.language = 'en'
+movie = Movie()
 
-def encode_file_ref(file_ref: bytes) -> str:
-    return base64.urlsafe_b64encode(file_ref).decode().rstrip("=")
+@Client.on_message(filters.chat(CHANNELS) & media_filter)
+async def media(bot, message):
+    bot_id = bot.me.id
+    media = getattr(message, message.media.value, None)
+    if media.mime_type in ['video/mp4', 'video/x-matroska']:
+        media.file_type = message.media.value
+        media.caption = message.caption
+        success_sts = await save_file(media)
+        if success_sts == 'suc' and await db.get_send_movie_update_status(bot_id):
+            file_id, file_ref = unpack_new_file_id(media.file_id)
+            await send_movie_updates(bot, file_name=media.file_name, caption=media.caption, file_id=file_id)
 
-def unpack_new_file_id(new_file_id):
-    """Return file_id, file_ref"""
-    decoded = FileId.decode(new_file_id)
-    file_id = encode_file_id(
-        pack(
-            "<iiqq",
-            int(decoded.file_type),
-            decoded.dc_id,
-            decoded.media_id,
-            decoded.access_hash
-        )
-    )
-    file_ref = encode_file_ref(decoded.file_reference)
-    return file_id, file_ref
-
-
-async def send_msg(bot, filename, caption): 
+async def get_poster(movie_name):
     try:
-        filename = re.sub(r'\(\@\S+\)|\[\@\S+\]|\b@\S+|\bwww\.\S+', '', filename).strip()
-        caption = re.sub(r'\(\@\S+\)|\[\@\S+\]|\b@\S+|\bwww\.\S+', '', caption).strip()
-        
+        for lang in ['hi', 'en']:
+            tmdb.language = lang
+            results = movie.search(movie_name)
+            if results:
+                movie_id = results[0].id
+                images = movie.images(movie_id)
+                backdrops = images.get('backdrops', [])
+                for backdrop in backdrops:
+                    if backdrop.get('file_path'):
+                        return {"poster": f"https://image.tmdb.org/t/p/w1280{backdrop['file_path']}"}
+        return None
+    except Exception as e:
+        print(f"TMDb Poster Fetch Error: {e}")
+        return None
+
+async def movie_name_format(file_name):
+    filename = re.sub(r'http\S+', '', re.sub(r'@\w+|#\w+', '', file_name)
+                      .replace('_', ' ').replace('[', '').replace(']', '')
+                      .replace('(', '').replace(')', '').replace('{', '').replace('}', '')
+                      .replace('.', ' ').replace('@', '').replace(':', '')
+                      .replace(';', '').replace("'", '').replace('-', '').replace('!', '')).strip()
+    return filename
+
+async def check_qualities(text, qualities: list):
+    quality = []
+    for q in qualities:
+        if q in text:
+            quality.append(q)
+    quality = ", ".join(quality)
+    return quality[:-2] if quality.endswith(", ") else quality
+
+async def send_movie_updates(bot, file_name, caption, file_id):
+    try:
         year_match = re.search(r"\b(19|20)\d{2}\b", caption)
-        year = year_match.group(0) if year_match else None
-
+        year = year_match.group(0) if year_match else None      
         pattern = r"(?i)(?:s|season)0*(\d{1,2})"
-        season = re.search(pattern, caption) or re.search(pattern, filename)
-        season = season.group(1) if season else None 
-
+        season = re.search(pattern, caption)
+        if not season:
+            season = re.search(pattern, file_name) 
         if year:
-            filename = filename[: filename.find(year) + 4]  
-        elif season and season in filename:
-            filename = filename[: filename.find(season) + 1]
-
-        qualities = ["ORG", "org", "hdcam", "HDCAM", "HQ", "hq", "HDRip", "hdrip", "camrip", "CAMRip", "hdtc", "predvd", "DVDscr", "dvdscr", "dvdrip", "dvdscr", "HDTC", "dvdscreen", "HDTS", "hdts"]
-        quality = await get_qualities(caption.lower(), qualities) or "HDRip"
-
+            file_name = file_name[:file_name.find(year) + 4]      
+        if not year:
+            if season:
+                season = season.group(1) if season else None       
+                file_name = file_name[:file_name.find(season) + 1]
+        qualities = ["ORG", "org", "hdcam", "HDCAM", "HQ", "hq", "HDRip", "hdrip", 
+                     "camrip", "WEB-DL", "CAMRip", "hdtc", "predvd", "DVDscr", "dvdscr", 
+                     "dvdrip", "dvdscr", "HDTC", "dvdscreen", "HDTS", "hdts"]
+        quality = await check_qualities(caption, qualities) or "HDRip"
         language = ""
-        possible_languages = CAPTION_LANGUAGES
-        for lang in possible_languages:
+        nb_languages = ["Hindi", "Bengali", "English", "Marathi", "Tamil", "Telugu", 
+                        "Malayalam", "Kannada", "Punjabi", "Gujrati", "Korean", 
+                        "Japanese", "Bhojpuri", "Dual", "Multi"]    
+        for lang in nb_languages:
             if lang.lower() in caption.lower():
-                language += f"#{lang}, "
-        language = language[:-2] if language else "Not idea 😄"
+                language += f"{lang}, "
+        language = language.strip(", ") or "Not Idea"
+        movie_name = await movie_name_format(file_name)    
+        if movie_name in processed_movies:
+            return 
+        processed_movies.add(movie_name)    
+        poster_data = await get_poster(movie_name)
+        poster_url = poster_data.get("poster") if poster_data else None
 
-        filename = re.sub(r"[\(\)\[\]\{\}:;'\-!]", "", filename)
-
-        text = "\n\n🎬 𝖳𝗂𝗍𝗅𝖾: `{}`\n\n💿 𝖰𝗎𝖺𝗅𝗂𝗍𝗒: {}\n\n🔊 𝖠𝗎𝖽𝗂𝗈  : {}"
-        text = text.format(filename, quality, language)
-
-        if await add_name(OWNERID, filename):
-            imdb = await get_movie_details(filename)  
-            resized_poster = None
-
-            if imdb:
-                poster_url = imdb.get('poster_url')
-                if poster_url:
-                    resized_poster = await fetch_image(poster_url)  
-
-            filenames = filename.replace(" ", '-')
-            btn = [[InlineKeyboardButton('🔰 𝐒𝐄𝐀𝐑𝐂𝐇 𝐇𝐄𝐑𝐄 🔰', url=f"https://t.me/+WtlAyRpidLExMDE1")]]
-            
+        caption_message = f"#ɴᴇᴡ_ᴍᴇᴅɪᴀ ✅\n\n🫥  {movie_name} {year or ''} ⿻   | ⭐ ɪᴍᴅʙ ɪɴғᴏ\n\n🎭 ɢᴇɴʀᴇs : {language}\n\n📽 ғᴏʀᴍᴀᴛ: {quality}\n🔊 ᴀᴜᴅɪᴏ: {language if language != 'Not Idea' else 'Hindi'}\n\n#TV_SERIES" 
+        search_movie = movie_name.replace(" ", '-')
+        movie_update_channel = await db.movies_update_channel_id()    
+        btn = [[
+            InlineKeyboardButton("🔰𝐌𝐨𝐯𝐢𝐞𝐬 𝐒𝐞𝐚𝐫𝐜𝐡 𝐆𝐫𝐨𝐮𝐩 🔰", url="https://t.me/Strangerthing50")
+        ]]
             if resized_poster:
                 await bot.send_photo(chat_id=DREAMCINEZONE_MOVIE_UPDATE_CHANNEL, photo=resized_poster, caption=text, reply_markup=InlineKeyboardMarkup(btn))
             else:              
