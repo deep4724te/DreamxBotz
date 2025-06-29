@@ -122,7 +122,7 @@ async def get_movie_details(query, id=False, file=None):
             'poster_url': poster_url,
             'plot': plot,
             'rating': str(movie.get("rating")),
-            'url': f'https://envs.sh/title/tt{movieid}'
+            'url': f'https://in.bookmyshow.com/title/tt{movieid}'
         }
 
     except Exception as e:
