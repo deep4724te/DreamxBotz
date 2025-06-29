@@ -288,7 +288,7 @@ async def send_msg(bot, filename, caption):
             resized_poster = None
 
             if imdb:
-                poster_url = imdb.get('https://www.google.com/search?q={movie_name}+landscape+poster&tbm=isch&tbs=isz:l')
+                poster_url = imdb.get('poster_url')
                 if poster_url:
                     resized_poster = await fetch_image(poster_url)  
 
